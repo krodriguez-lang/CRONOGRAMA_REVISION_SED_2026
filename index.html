@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma de Revisión de Informes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .school-card {
+            transition: all 0.3s ease;
+        }
+        .school-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .school-content.active {
+            max-height: 1000px;
+        }
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+        .chevron.active {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+                <svg class="text-indigo-600" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                Cronograma de Revisión de Informes
+            </h1>
+            <p class="text-lg font-semibold text-indigo-600 mt-2">Periodo de corte: Enero a Abril de 2026</p>
+            <p class="text-gray-600 mt-2">Haz clic en cada colegio para ver los detalles</p>
+        </div>
+
+        <!-- Schedule Container -->
+        <div id="scheduleContainer"></div>
+    </div>
+
+    <script>
+        const scheduleData = [
+            {
+                date: 'Viernes 24 de abril',
+                schools: [
+                    {
+                        name: 'Argelia',
+                        time: '7:00 am - 11:00 am',
+                        contacts: [
+                            { team: 'Equipo Bienestar', name: 'Pendiente' },
+                            { team: 'Equipo Directivo Docente', name: 'Katerin Gámez' },
+                            { team: 'Equipo Administrativo', name: 'Jhon Shneider Meneses Valencia' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/K0JeiIQa6gbDrwPt7WQE8B'
+                    }
+                ]
+            },
+            {
+                date: 'Lunes 27 de abril',
+                schools: [
+                    {
+                        name: 'El Nogal',
+                        time: '7:00 am - 11:00 am',
+                        contacts: [
+                            { team: 'Equipo Bienestar', name: 'Daniela Suárez Moreno' },
+                            { team: 'Equipo Directivo Docente', name: 'Yenny Edilma Gutiérrez' },
+                            { team: 'Equipo Administrativo', name: 'Lindsay Diaz Abadía' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/JtIpqyD2zpe56bh7LJMOl7'
+                    },
+                    {
+                        name: 'La Giralda',
+                        time: '1:00 pm - 4:00 pm',
+                        contacts: [
+                            { team: 'Equipo Directivo Docente', name: 'Sindy Milena Chacón' },
+                            { team: 'Equipo Bienestar', name: 'María de los Ángeles Ramírez' },
+                            { team: 'Equipo Administrativo', name: 'Lina Fernanda Salazar' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/KjYMlrTyqjlAoHQ7Q7ASIB'
+                    }
+                ]
+            },
+            {
+                date: 'Martes 28 de abril',
+                schools: [
+                    {
+                        name: 'Jaime Garzón',
+                        time: '7:00 am - 11:00 am',
+                        contacts: [
+                            { team: 'Equipo Bienestar', name: 'Erika Daniela Pachon' },
+                            { team: 'Equipo Directivo Docente', name: 'Pendiente' },
+                            { team: 'Equipo Administrativo', name: 'Cinthia Lorein Cortes' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/KziRfxN9IxWEce8DEydkze'
+                    },
+                    {
+                        name: 'Jorge Isaacs',
+                        time: '1:00 pm - 4:00 pm',
+                        contacts: [
+                            { team: 'Equipo Bienestar', name: 'Néstor Camilo Sosa Naranja' },
+                            { team: 'Equipo Directivo Docente', name: 'Lady Julieth Ospina Agudelo' },
+                            { team: 'Equipo Administrativo', name: 'Angela Andrea López Robayo' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/Gme9mU8zEuAB7Q6bOukYiL'
+                    }
+                ]
+            },
+            {
+                date: 'Miércoles 29 de abril',
+                schools: [
+                    {
+                        name: 'Las Margaritas',
+                        time: '7:00 am - 11:00 am',
+                        contacts: [
+                            { team: 'Equipo Directivo Docente', name: 'Slenny Silva S' },
+                            { team: 'Equipo Bienestar', name: 'Daniela Ospina' },
+                            { team: 'Equipo Administrativo', name: 'Sergio Parra' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/BvpGPN0rDmR2cnHF4MxLou'
+                    },
+                    {
+                        name: 'Laurel de Cera',
+                        time: '1:00 pm - 3:00 pm',
+                        contacts: [
+                            { team: 'Equipo Directivo Docente', name: 'Carol Yojanna Caballero Rodríguez' },
+                            { team: 'Equipo Bienestar', name: 'Jorge Sebastián Cháves Murcia' },
+                            { team: 'Equipo Administrativo', name: 'Deisy Yurani Rodríguez Ruiz' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/BQW3foROeZE35S1powZCQx'
+                    }
+                ]
+            },
+            {
+                date: 'Jueves 30 de abril',
+                schools: [
+                    {
+                        name: 'Miravalle',
+                        time: '7:00 am - 11:00 am',
+                        contacts: [
+                            { team: 'Equipo Bienestar', name: 'Monica Urrego' },
+                            { team: 'Equipo Directivo Docente', name: 'Cristian Camilo Moya' },
+                            { team: 'Equipo Administrativo', name: 'Andrés Igua' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/CDTLTXLzki1GHVI6vcZMqH'
+                    },
+                    {
+                        name: 'Parques de Bogotá',
+                        time: '1:00 pm - 4:00 pm',
+                        contacts: [
+                            { team: 'Equipo Bienestar', name: 'María Paula Prada Gómez' },
+                            { team: 'Equipo Directivo Docente', name: 'Pendiente' },
+                            { team: 'Equipo Administrativo', name: 'Fabiola Latorre Jácome' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/CIG4LJR7woHIq7yNyMt3Ly'
+                    }
+                ]
+            },
+            {
+                date: 'Lunes 4 de mayo',
+                schools: [
+                    {
+                        name: 'Santiago de las Atalayas',
+                        time: '7:00 am - 11:00 am',
+                        contacts: [
+                            { team: 'Equipo Bienestar', name: 'Yuliam Andrea Rodríguez' },
+                            { team: 'Equipo Directivo Docente', name: 'Luis Fernando Gómez' },
+                            { team: 'Equipo Administrativo', name: 'Enadis Flórez' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/IGcguW4EDhd8XU6ZP9VwwO'
+                    },
+                    {
+                        name: 'Ciudad Chengdú',
+                        time: '12:00 pm - 3:00 pm',
+                        contacts: [
+                            { team: 'Equipo Bienestar', name: 'Claudia Marcela Castro' },
+                            { team: 'Equipo Directivo Docente', name: 'Gina Liliana Luna Enciso' },
+                            { team: 'Equipo Administrativo', name: 'Edison Quiñonez' }
+                        ],
+                        whatsapp: 'https://chat.whatsapp.com/EUaCLkXkULgBZOFg9C7QMr'
+                    }
+                ]
+            }
+        ];
+
+        function toggleSchool(schoolId) {
+            const content = document.getElementById(`content-${schoolId}`);
+            const chevron = document.getElementById(`chevron-${schoolId}`);
+            
+            content.classList.toggle('active');
+            chevron.classList.toggle('active');
+        }
+
+        function renderSchedule() {
+            const container = document.getElementById('scheduleContainer');
+            let html = '';
+
+            scheduleData.forEach((day, dayIndex) => {
+                html += `
+                    <div class="mb-6">
+                        <div class="bg-indigo-600 text-white rounded-t-xl px-6 py-3 font-semibold text-lg flex items-center gap-2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            ${day.date}
+                        </div>
+                        <div class="bg-white rounded-b-xl shadow-lg overflow-hidden">
+                `;
+
+                day.schools.forEach((school, schoolIndex) => {
+                    const schoolId = `${dayIndex}-${schoolIndex}`;
+                    html += `
+                        <div class="border-b last:border-b-0">
+                            <button onclick="toggleSchool('${schoolId}')" class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span class="font-semibold text-gray-800 text-lg">${school.name}</span>
+                                </div>
+                                <svg id="chevron-${schoolId}" class="chevron text-gray-400" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                            
+                            <div id="content-${schoolId}" class="school-content px-6 bg-gray-50 border-t">
+                                <div class="py-4 space-y-4">
+                                    <div class="flex items-center gap-3 text-gray-700">
+                                        <svg class="text-indigo-600" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        <div>
+                                            <p class="font-semibold text-sm text-gray-500">Jornada</p>
+                                            <p class="text-base">${school.time}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <svg class="text-indigo-600" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="9" cy="7" r="4"></circle>
+                                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                            </svg>
+                                            <p class="font-semibold text-gray-700">Personas Enlace</p>
+                                        </div>
+                                        <div class="space-y-2 ml-7">
+                    `;
+
+                    school.contacts.forEach(contact => {
+                        const isPending = contact.name === 'Pendiente';
+                        html += `
+                            <div class="bg-white rounded-lg p-3 shadow-sm">
+                                <p class="text-xs font-semibold text-indigo-600 mb-1">${contact.team}</p>
+                                <p class="text-sm ${isPending ? 'text-amber-600 font-semibold italic' : 'text-gray-800'}">${contact.name}</p>
+                            </div>
+                        `;
+                    });
+
+                    html += `
+                                        </div>
+                                    </div>
+                                    
+                                    <a href="${school.whatsapp}" target="_blank" rel="noopener noreferrer" 
+                                       class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg transition-colors w-full justify-center font-semibold">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                                        </svg>
+                                        Enlace de la comunidad de WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Render on page load
+        renderSchedule();
+    </script>
+</body>
+</html>
