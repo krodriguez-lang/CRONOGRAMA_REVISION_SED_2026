@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cronograma de Revisión de Informes</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-1: #eef4ff;
+      --bg-2: #e7ebff;
+      --card: #ffffff;
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --success: #22c55e;
+      --success-dark: #16a34a;
+      --warning: #d97706;
+      --shadow: 0 10px 24px rgba(0, 0, 0, 0.10);
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      color: var(--text);
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: var(--card);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .calendar-icon {
+      width: 44px;
+      height: 44px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 2.3rem);
+      line-height: 1.15;
+      color: #183153;
+    }
+
+    .subtitle {
+      margin: 8px 0 6px;
+      color: var(--primary);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .description {
+      margin: 0;
+      color: #4b5563;
+      font-size: 1rem;
+    }
+
+    .day {
+      background: var(--card);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .day-title {
+      background: linear-gradient(90deg, var(--primary), #5b4df0);
+      color: white;
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .day-title svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .school {
+      border-top: 1px solid var(--border);
+    }
+
+    .school-button {
+      width: 100%;
+      border: 0;
+      background: #fff;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.2s ease;
+    }
+
+    .school-button:hover {
+      background: #f9fafb;
+    }
+
+    .school-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      flex-shrink: 0;
+    }
+
+    .school-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .arrow {
+      color: #9ca3af;
+      font-size: 1.1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+
+    .details {
+      display: none;
+      background: #f9fafb;
+      border-top: 1px solid var(--border);
+      padding: 20px 22px 22px;
+    }
+
+    .details.active {
+      display: block;
+    }
+
+    .info-block {
+      margin-bottom: 18px;
+    }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .label-row svg {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .label {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .value {
+      margin: 0 0 0 30px;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .contacts-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .contacts-title svg {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .contacts-title p {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .contacts {
+      margin-left: 30px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .contact-card {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .contact-team {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0 0 4px;
+    }
+
+    .contact-name {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .contact-name.pending {
+      color: var(--warning);
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .whatsapp-link {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      text-decoration: none;
+      background: var(--success);
+      color: #fff;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      transition: background 0.2s ease;
+    }
+
+    .whatsapp-link:hover {
+      background: var(--success-dark);
+    }
+
+    .whatsapp-link svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 14px;
+      }
+
+      .header,
+      .details,
+      .school-button,
+      .day-title {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .header {
+        padding-top: 22px;
+        padding-bottom: 22px;
+      }
+
+      .value,
+      .contacts {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-top">
+        <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <h1>Cronograma de Revisión de Informes</h1>
+      </div>
+      <p class="subtitle">Periodo de corte: Enero a Abril de 2026</p>
+      <p class="description">Haz clic en cada colegio para ver los detalles</p>
+    </header>
+
+    <main id="app"></main>
+  </div>
+
+  <script>
+    const scheduleData = [
+      {
+        date: 'Viernes 24 de abril',
+        schools: [
+          {
+            name: 'Argelia',
+            time: '7:00 am - 11:00 am',
+            contacts: [
+              { team: 'Equipo Bienestar', name: 'Alexandra Rincón' },
+              { team: 'Equipo Directivo Docente', name: 'Katerin Gámez' },
+              { team: 'Equipo Administrativo', name: 'Jhon Shneider Meneses Valencia' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/K0JeiIQa6gbDrwPt7WQE8B'
+          }
+        ]
+      },
+      {
+        date: 'Lunes 27 de abril',
+        schools: [
+          {
+            name: 'El Nogal',
+            time: '7:00 am - 11:00 am',
+            contacts: [
+              { team: 'Equipo Bienestar', name: 'Daniela Suárez Moreno' },
+              { team: 'Equipo Directivo Docente', name: 'Yenny Edilma Gutiérrez' },
+              { team: 'Equipo Administrativo', name: 'Lindsay Diaz Abadía' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/JtIpqyD2zpe56bh7LJMOl7'
+          },
+          {
+            name: 'La Giralda',
+            time: '1:00 pm - 4:00 pm',
+            contacts: [
+              { team: 'Equipo Directivo Docente', name: 'Sindy Milena Chacón' },
+              { team: 'Equipo Bienestar', name: 'María de los Ángeles Ramírez' },
+              { team: 'Equipo Administrativo', name: 'Lina Fernanda Salazar' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/KjYMlrTyqjlAoHQ7Q7ASIB'
+          }
+        ]
+      },
+      {
+        date: 'Martes 28 de abril',
+        schools: [
+          {
+            name: 'Jaime Garzón',
+            time: '7:00 am - 11:00 am',
+            contacts: [
+              { team: 'Equipo Bienestar', name: 'Erika Daniela Pachon' },
+              { team: 'Equipo Directivo Docente', name: 'Leidy Carolina Daza' },
+              { team: 'Equipo Administrativo', name: 'Cinthia Lorein Cortes' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/KziRfxN9IxWEce8DEydkze'
+          },
+          {
+            name: 'Jorge Isaacs',
+            time: '1:00 pm - 4:00 pm',
+            contacts: [
+              { team: 'Equipo Bienestar', name: 'Néstor Camilo Sosa Naranja' },
+              { team: 'Equipo Directivo Docente', name: 'Lady Julieth Ospina Agudelo' },
+              { team: 'Equipo Administrativo', name: 'Angela Andrea López Robayo' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/Gme9mU8zEuAB7Q6bOukYiL'
+          }
+        ]
+      },
+      {
+        date: 'Miércoles 29 de abril',
+        schools: [
+          {
+            name: 'Las Margaritas',
+            time: '7:00 am - 11:00 am',
+            contacts: [
+              { team: 'Equipo Directivo Docente', name: 'Slenny Silva S' },
+              { team: 'Equipo Bienestar', name: 'Daniela Ospina' },
+              { team: 'Equipo Administrativo', name: 'Sergio Parra' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/BvpGPN0rDmR2cnHF4MxLou'
+          },
+          {
+            name: 'Laurel de Cera',
+            time: '1:00 pm - 3:00 pm',
+            contacts: [
+              { team: 'Equipo Directivo Docente', name: 'Carol Yojanna Caballero Rodríguez' },
+              { team: 'Equipo Bienestar', name: 'Jorge Sebastián Cháves Murcia' },
+              { team: 'Equipo Administrativo', name: 'Deisy Yurani Rodríguez Ruiz' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/BQW3foROeZE35S1powZCQx'
+          }
+        ]
+      },
+      {
+        date: 'Jueves 30 de abril',
+        schools: [
+          {
+            name: 'Miravalle',
+            time: '7:00 am - 11:00 am',
+            contacts: [
+              { team: 'Equipo Bienestar', name: 'Monica Urrego' },
+              { team: 'Equipo Directivo Docente', name: 'Cristian Camilo Moya' },
+              { team: 'Equipo Administrativo', name: 'Andrés Igua' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/CDTLTXLzki1GHVI6vcZMqH'
+          },
+          {
+            name: 'Parques de Bogotá',
+            time: '1:00 pm - 4:00 pm',
+            contacts: [
+              { team: 'Equipo Bienestar', name: 'María Paula Prada Gómez' },
+              { team: 'Equipo Directivo Docente', name: 'Pendiente' },
+              { team: 'Equipo Administrativo', name: 'Fabiola Latorre Jácome' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/CIG4LJR7woHIq7yNyMt3Ly'
+          }
+        ]
+      },
+      {
+        date: 'Lunes 4 de mayo',
+        schools: [
+          {
+            name: 'Santiago de las Atalayas',
+            time: '7:00 am - 11:00 am',
+            contacts: [
+              { team: 'Equipo Bienestar', name: 'Yuliam Andrea Rodríguez' },
+              { team: 'Equipo Directivo Docente', name: 'Luis Fernando Gómez' },
+              { team: 'Equipo Administrativo', name: 'Enadis Flórez' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/IGcguW4EDhd8XU6ZP9VwwO'
+          },
+          {
+            name: 'Ciudad Chengdú',
+            time: '12:00 pm - 3:00 pm',
+            contacts: [
+              { team: 'Equipo Bienestar', name: 'Claudia Marcela Castro' },
+              { team: 'Equipo Directivo Docente', name: 'Gina Liliana Luna Enciso' },
+              { team: 'Equipo Administrativo', name: 'Edison Quiñonez' }
+            ],
+            whatsapp: 'https://chat.whatsapp.com/EUaCLkXkULgBZOFg9C7QMr'
+          }
+        ]
+      }
+    ];
+
+    const app = document.getElementById('app');
+
+    const icons = {
+      calendar: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      `,
+      clock: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <polyline points="12 7 12 12 15 14"></polyline>
+        </svg>
+      `,
+      users: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      `,
+      message: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      `
+    };
+
+    app.innerHTML = scheduleData.map((day, dayIndex) => `
+      <section class="day">
+        <div class="day-title">
+          ${icons.calendar}
+          <span>${day.date}</span>
+        </div>
+
+        ${day.schools.map((school, schoolIndex) => `
+          <div class="school">
+            <button
+              class="school-button"
+              type="button"
+              aria-expanded="false"
+              onclick="toggleDetails('detail-${dayIndex}-${schoolIndex}', this)"
+            >
+              <div class="school-left">
+                <span class="dot"></span>
+                <span class="school-name">${school.name}</span>
+              </div>
+              <span class="arrow">▼</span>
+            </button>
+
+            <div class="details" id="detail-${dayIndex}-${schoolIndex}">
+              <div class="info-block">
+                <div class="label-row">
+                  ${icons.clock}
+                  <p class="label">Jornada</p>
+                </div>
+                <p class="value">${school.time}</p>
+              </div>
+
+              <div class="contacts-title">
+                ${icons.users}
+                <p>Personas Enlace</p>
+              </div>
+
+              <div class="contacts">
+                ${school.contacts.map(contact => `
+                  <div class="contact-card">
+                    <p class="contact-team">${contact.team}</p>
+                    <p class="contact-name ${contact.name === 'Pendiente' ? 'pending' : ''}">
+                      ${contact.name}
+                    </p>
+                  </div>
+                `).join('')}
+              </div>
+
+              <a
+                class="whatsapp-link"
+                href="${school.whatsapp}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                ${icons.message}
+                <span>Enlace de la comunidad de WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        `).join('')}
+      </section>
+    `).join('');
+
+    function toggleDetails(detailId, button) {
+      const detail = document.getElementById(detailId);
+      const arrow = button.querySelector('.arrow');
+      const isOpen = detail.classList.contains('active');
+
+      document.querySelectorAll('.details').forEach((item) => {
+        item.classList.remove('active');
+      });
+
+      document.querySelectorAll('.school-button').forEach((btn) => {
+        btn.setAttribute('aria-expanded', 'false');
+        const btnArrow = btn.querySelector('.arrow');
+        if (btnArrow) btnArrow.textContent = '▼';
+      });
+
+      if (!isOpen) {
+        detail.classList.add('active');
+        button.setAttribute('aria-expanded', 'true');
+        arrow.textContent = '▲';
+      }
+    }
+  </script>
+</body>
+</html>
